@@ -1,19 +1,40 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 #include "8_task.h"
 
 int main()
 {
-    int array_1[] = {1, 2, 3};
-    int array_2[] = {4, 5, 6};
-    int array_3[] = {7, 8, 9};
-    int res[] = {0, 0, 0};
-    int *arrays[] = {array_1, array_2, array_3};
-    concotinate_arrays(arrays, 3, 3, res);
-    for (int i = 0; i < 3; ++i)
-    {
-        printf("%d ", res[i]);
-    }
+    srand(time(NULL));
+    int k = (rand() % 100) + 1;
+    int n = (rand() % 100) + 1;
+    printf("create %d arrays sizes %d", k, n);
     printf("\n");
+    int **arrays = (int **)malloc(k * sizeof(int *));
+    int *sizes = (int *)malloc(n * sizeof(int));
+
+    for (int i = 0; i < k; ++i)
+    {
+        sizes[i] = n;
+        arrays[i] = (int *)malloc(n * sizeof(int));
+        for (int j = 0; j < n; ++j)
+        {
+            arrays[i][j] = rand();
+        }
+    }
+    int *res = (int *)malloc(k * sizeof(int));
+    concotinate_arrays(arrays, k, n, res);
+    printf("%d", res[0]);
+    printf("\n");
+
+    printf("%d %d", k, n);
+    printf("\n");
+    for (int i = 0; i < k; ++i)
+    {
+        free(arrays[i]);
+    }
+    free(arrays);
+    free(sizes);
 
     return 0;
 }

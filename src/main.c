@@ -3,7 +3,6 @@
 #include <time.h>
 #include <pthread.h>
 
-// Структура для передачи данных в каждый поток
 typedef struct
 {
     int **arrays;
@@ -13,7 +12,6 @@ typedef struct
     int end_index;
 } ThreadData;
 
-// Однопоточная функция
 void concotinate_arrays_single(int **arrays, int k, int n, int *res)
 {
     for (int i = 0; i < k; ++i)
@@ -27,7 +25,6 @@ void concotinate_arrays_single(int **arrays, int k, int n, int *res)
     }
 }
 
-// Потоковый воркер
 void *worker_function(void *arg)
 {
     ThreadData *data = (ThreadData *)arg;
@@ -43,7 +40,6 @@ void *worker_function(void *arg)
     return NULL;
 }
 
-// Многопоточная функция
 void concotinate_arrays_multi(int **arrays, int k, int n, int *res, int max_threads)
 {
     int active_threads = (max_threads > k) ? k : max_threads;
@@ -105,11 +101,9 @@ int main(int argc, char *argv[])
 
     struct timespec start, end;
 
-    printf("=== НАЧАЛО ТЕСТИРОВАНИЯ ===\n");
-    printf("Размер данных: %d массивов по %d элементов\n\n", k, n);
+    printf("start tests\n");
+    printf("data: %d arrays by %d elements\n\n", k, n);
 
-    // --- Тест 1: Однопоточный режим ---
-    printf("Запуск однопоточного режима... ");
     fflush(stdout);
 
     clock_gettime(CLOCK_MONOTONIC, &start);
@@ -117,10 +111,9 @@ int main(int argc, char *argv[])
     clock_gettime(CLOCK_MONOTONIC, &end);
 
     double time_single = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
-    printf("Готово!\nВремя (1 поток):  %.5f сек\n\n", time_single);
+    printf("time 1 thread:  %.5f sec\n\n", time_single);
 
-    // --- Тест 2: Многопоточный режим ---
-    printf("Запуск многопоточного режима (%d потоков)... ", max_threads);
+    printf("multi thread (%d threads) ", max_threads);
     fflush(stdout);
 
     clock_gettime(CLOCK_MONOTONIC, &start);
@@ -128,13 +121,10 @@ int main(int argc, char *argv[])
     clock_gettime(CLOCK_MONOTONIC, &end);
 
     double time_multi = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
-    printf("Готово!\nВремя (%d потоков): %.5f сек\n\n", max_threads, time_multi);
+    printf("time %d threads): %.5f sec\n\n", max_threads, time_multi);
 
-    // --- Итоговое сравнение ---
-    printf("=== ИТОГОВОЕ УСКОРЕНИЕ ===\n");
-    printf("Ускорение:        %.2fx\n", time_single / time_multi);
+    printf("acceleration: %.2fx\n", time_single / time_multi);
 
-    // Освобождение ресурсов
     for (int i = 0; i < k; ++i)
         free(arrays[i]);
     free(arrays);
